@@ -140,8 +140,8 @@ README.md
 
 ## Author
 
-Mohammad Showkotul Islam
-Sabir Mahmud
+* Mohammad Showkotul Islam
+* Sabir Mahmud
 
 ---
 

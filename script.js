@@ -33,6 +33,43 @@ const jobs = [
 
 document.addEventListener("DOMContentLoaded", function () {
 
+  // event state ( image + text)
+  const emptyState = document.createElement("div");
+  emptyState.className = "bg-white shadow rounded-xl w-full min-h-[350px] flex flex-col items-center justify-center text-center mt-8";
+
+  const img = document.createElement("img");
+  img.src = "images/jobs.png";
+  img.className = "w-20 mb-6";
+
+  const title = document.createElement("h3");
+  title.innerText = "No jobs available";
+  title.className = "text-xl font-semibold text-gray-700 mb-2";
+
+  const subtitle = document.createElement("p");
+  subtitle.innerText = "Check back soon for new job opportunities.";
+  subtitle.className = "text-gray-500 text-sm";
+
+  emptyState.append(img, title, subtitle);  
+
+  const cardsSection = document.querySelector("section");
+  
+   function toggleEmptyState() {
+    let visible = 0;
+    jobCards.forEach(card => {
+      if(card.style.display !== "none")
+        visible++;
+    });
+
+    if(visible === 0) {
+      if(!cardsSection.contains(emptyState)) {
+        cardsSection.appendChild(emptyState);
+      }   
+    } else {
+     emptyState.remove();
+      }
+  }
+    
+  // stats elements
   // getting all the elements
   const statNumbers = document.querySelectorAll("header .text-3xl");
   const totalEl = statNumbers[0];
@@ -53,11 +90,12 @@ document.addEventListener("DOMContentLoaded", function () {
           rejCount++; 
     }
      
-        totalEl.innerText = jobs.length;
+        totalEl.innerText = jobs.filter(j => j.status !== "deleted").length;
         interviewEl.innerText = intCount;
         rejectedEl.innerText = rejCount;
   }
 
+  // card buttons
   // loop through for each card
   for(let i = 0; i < jobCards.length; i++) {
     let card = jobCards[i];
@@ -76,7 +114,8 @@ document.addEventListener("DOMContentLoaded", function () {
           statusSpan.innerText = "Interview";
           statusSpan.className = "bg-green-100 text-green-600px-3 py-1 rounded text-sm";
 
-          updateStats();
+             updateStats();
+             toggleEmptyState();
            };
         }
 
@@ -87,7 +126,8 @@ document.addEventListener("DOMContentLoaded", function () {
           statusSpan.innerText = "Rejected";
           statusSpan.className = "bg-red-100 text-red-600 px-3 py-1 rounded text-sm";
 
-          updateStats();
+               updateStats();
+              toggleEmptyState();
            };   
         }
 
@@ -95,7 +135,8 @@ document.addEventListener("DOMContentLoaded", function () {
           deleteBtn.onclick = function() {
            card.style.display = "none";  
            jobs[i].status = "deleted";
-           updateStats();
+              updateStats();
+              toggleEmptyState();
           };
         }
       }  
@@ -119,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // show/hide cards
       for(let k = 0; k < jobCards.length; k++) {
-        if(filterType === "all") {
+        if(filterType === "all" && jobs[k].status !== "deleted") {
           jobCards[k].style.display = "flex";
         } else if(jobs[k].status === filterType) {
           jobCards[k].style.display = "flex";
@@ -127,9 +168,12 @@ document.addEventListener("DOMContentLoaded", function () {
           jobCards[k].style.display = "none";
         }
       }
+
+      toggleEmptyState();
     };
   }
 
   // initial stats show
   updateStats();
+  toggleEmptyState();
 });
